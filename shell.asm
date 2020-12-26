@@ -24,6 +24,8 @@ include    kernel.inc
            br      start
 
 include    date.inc
+include    build.inc
+           db      'Written by Michael H. Riley',0
 
 chkvalue:  equ     01ffeh
 wrmvalue:  equ     01ffch
@@ -72,7 +74,7 @@ mncopy:    lda     rf                  ; get byte from stub
            str     rd
            sep     scall               ; display startup
            dw      f_inmsg
-           db      10,13,'Elf/OS Shell V0.3',10,13,0
+           db      10,13,'Elf/OS Shell V0.4',10,13,0
 main:      sep     scall               ; display prompt
            dw      f_inmsg
            db      10,13,'$ ',0
@@ -742,7 +744,7 @@ cp_mainlp: ldi     0                   ; want to read 255 bytes
            plo     rd
            sep     scall               ; write to destination file
            dw      o_write
-           br      cp_mainlp           ; loop back til done
+           lbr     cp_mainlp           ; loop back til done
 
 
 cp_done:   sep     scall               ; close the file
@@ -989,12 +991,12 @@ stub:      ldi     high stkvalue       ; address for stack
            dw      setbuf
            sep     scall               ; attempt to exec external command
            dw      o_exec
-           bnf     reload
+           lbnf    reload
            sep     scall               ; get input buffer address
            dw      setbuf
            sep     scall               ; attempt to exec external command
            dw      o_execbin
-           bnf     reload
+           lbnf    reload
 sterror:   ldi     high cmderr         ; indicate command error
            phi     rf
            ldi     low cmderr
@@ -1056,7 +1058,7 @@ stub_wrm:  ldi     high stkvalue       ; address for stack
            phi     r2
            lda     r7
            plo     r2
-           br      reload              ; check if shell reload is needed
+           lbr     reload              ; check if shell reload is needed
 
 chksum:    ldi     70h                 ; beginning of shell memory
            phi     rf
@@ -1079,14 +1081,14 @@ chksmlp:   glo     re                  ; get current checksum
            plo     re                  ; store it
            dec     rc                  ; decrement count
            glo     rc                  ; see if done
-           bnz     chksmlp             ; jump if not
+           lbnz    chksmlp             ; jump if not
            ghi     rc                  ; check high byte as well
-           bnz     chksmlp
+           lbnz    chksmlp
            sex     r2                  ; point x back to stack
            glo     re                  ; recover checksum
            sep     sret                ; and return
 
-shell:     db      '/BIN/SHELL',0
+shell:     db      '/BIN/shell',0
 endrom:    equ     $
 
 

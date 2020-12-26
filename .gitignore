@@ -1,5 +1,7 @@
-shell.prg
+build.inc
+build.num
 bios.inc
 date.inc
 kernel.inc
-
+*.prg
+*.lst
