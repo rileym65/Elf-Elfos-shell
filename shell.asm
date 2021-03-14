@@ -991,12 +991,12 @@ stub:      ldi     high stkvalue       ; address for stack
            dw      setbuf
            sep     scall               ; attempt to exec external command
            dw      o_exec
-           lbnf    reload
+           lbnf    (reload-05f00h)
            sep     scall               ; get input buffer address
            dw      setbuf
            sep     scall               ; attempt to exec external command
            dw      o_execbin
-           lbnf    reload
+           lbnf    (reload-05f00h)
 sterror:   ldi     high cmderr         ; indicate command error
            phi     rf
            ldi     low cmderr
@@ -1058,7 +1058,7 @@ stub_wrm:  ldi     high stkvalue       ; address for stack
            phi     r2
            lda     r7
            plo     r2
-           lbr     reload              ; check if shell reload is needed
+           lbr     (reload-05f00h)     ; check if shell reload is needed
 
 chksum:    ldi     70h                 ; beginning of shell memory
            phi     rf
@@ -1081,9 +1081,9 @@ chksmlp:   glo     re                  ; get current checksum
            plo     re                  ; store it
            dec     rc                  ; decrement count
            glo     rc                  ; see if done
-           lbnz    chksmlp             ; jump if not
+           lbnz    (chksmlp-05f00h)    ; jump if not
            ghi     rc                  ; check high byte as well
-           lbnz    chksmlp
+           lbnz    (chksmlp-05f00h)
            sex     r2                  ; point x back to stack
            glo     re                  ; recover checksum
            sep     sret                ; and return
